@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'weather.dart';
-import 'weather_data.dart';
+import 'weather_api.dart';
 
 class WeatherScreenManager {
   final weatherNotifier = ValueNotifier<Weather>(Weather.sunny);
   final degreeNotifier = ValueNotifier<String>('-');
-  final weatherData = WeatherData();
+  final isLoadingNotifier = ValueNotifier<bool>(false);
+  final weatherData = WeatherApi();
 
   void updateWeather() async {
-    // TODO: ask the internet
-    print('Updating...');
-    final degree = await weatherData.getDegree();
-    degreeNotifier.value = '$degree°';
+    isLoadingNotifier.value = true;
 
-    weatherNotifier.value = await weatherData.getWeather();
+    final WeatherData data = await weatherData.getWeatherData();
+    degreeNotifier.value = '${data.degree}°';
+
+    weatherNotifier.value = data.weather;
+
+    isLoadingNotifier.value = false;
   }
 }

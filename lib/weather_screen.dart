@@ -27,22 +27,22 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 builder: (context, value, child) {
                   switch (value) {
                     case Weather.sunny:
-                      return const Icon(
+                      return Icon(Icons.wb_sunny,
+                          size: 100, color: Colors.yellow);
+                    case Weather.cloudy:
+                      return Icon(
+                        Icons.wb_cloudy,
+                        size: 100,
+                        color: Colors.white,
+                      );
+                    case Weather.rainy:
+                      return Icon(Icons.umbrella, size: 100, color: Colors.red);
+                    default:
+                      return Icon(
                         Icons.wb_sunny,
                         size: 100,
                         color: Colors.yellow,
                       );
-                    case Weather.cloudy:
-                      return const Icon(
-                        Icons.wb_cloudy,
-                        size: 100,
-                        color: Colors.blueGrey,
-                      );
-                    case Weather.rainy:
-                      return const Icon(Icons.umbrella,
-                          size: 100, color: Colors.greenAccent);
-                    default:
-                      return const Icon(Icons.wb_sunny, size: 100);
                   }
                 }),
             SizedBox(height: 20),
@@ -60,11 +60,20 @@ class _WeatherScreenState extends State<WeatherScreen> {
               style: TextStyle(fontSize: 30),
             ),
             Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                manager.updateWeather();
+            ValueListenableBuilder<bool>(
+              valueListenable: manager.isLoadingNotifier,
+              builder: (context, isLoading, child) {
+                if (isLoading) {
+                  return CircularProgressIndicator();
+                } else {
+                  return ElevatedButton(
+                    onPressed: () {
+                      manager.updateWeather();
+                    },
+                    child: Text('Update'),
+                  );
+                }
               },
-              child: Text('Update'),
             ),
             SizedBox(height: 20),
           ],
